@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Reviews Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Google My Business Reviews</h1>
+
+    <div class="reviews-list">
+        {% for review in reviews %}
+            <div class="review">
+                <h3>{{ review.reviewer.displayName }}</h3>
+                <p>{{ review.comment }}</p>
+                <p>Rating: {{ review.starRating }} stars</p>
+                <button onclick="respondToReview('{{ review.reviewId }}')">Respond</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function respondToReview(reviewId) {
+            let responseText = prompt("Enter your response:");
+            if (responseText) {
+                fetch(`/reviews/respond/${reviewId}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ responseText })
+                }).then(response => response.json())
+                  .then(data => alert('Response posted!'));
+            }
+        }
+    </script>
+</body>
+</html>
